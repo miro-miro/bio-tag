@@ -174,6 +174,7 @@ The first one, EciI, will remove 10 nucleotides and open a sticky end of length
 Two of the nucleotides can be uniquely chosen for a symbol, while the other two
 are part of the PAM.
 
+
 \subsection{Example}
 To illustrate this design, we give an example encoding of a program that
 multiplies two powers of two.
@@ -182,11 +183,11 @@ The three symbols, X, Y and Z can be encoded as
 \begin{center}
   \begin{tikzpicture}
     \node[mytext]  (letX)    {X:};
-    \node[mytext, right of=letX]  (seqX)   {\ttfamily ACCT\\\ttfamily TGGA};
+    \node[mytext, right of=letX]  (seqX)   {\ttfamily 5-AA-3\\\ttfamily 3-TT-5};
     \node[mytext, right of=seqX]  (letY)    {Y:};
-    \node[mytext, right of=letY]  (seqY)   {\ttfamily CAAG\\\ttfamily GTTC};
+    \node[mytext, right of=letY]  (seqY)   {\ttfamily 5-GG-3\\\ttfamily 3-CC-5};
     \node[mytext, right of=seqY]  (letZ)    {Z:};
-    \node[mytext, right of=letZ]  (seqZ)   {\ttfamily TCGA\\\ttfamily AGCT};
+    \node[mytext, right of=letZ]  (seqZ)   {\ttfamily 5-CC-3\\\ttfamily 3-GG-5};
   \end{tikzpicture}
 \end{center}
 Thus the initial input of a program that multiplies 2 by 2, XXYY, is
@@ -194,8 +195,8 @@ Thus the initial input of a program that multiplies 2 by 2, XXYY, is
 \begin{center}
   \begin{tikzpicture}
     \node[mytext] (seq) {
-      \ttfamily 5-ACCTACCTCAAGCAAG-3\\
-      \ttfamily 3-\ \ \ \ TGGAGTTCGT\ \ -5
+      \ttfamily 5-AATTTAATTTGGTTTGGTTT-3\\
+      \ttfamily 3-\ \ \ \ ATTAAACCAAACCA\ \ -5
     };
   \end{tikzpicture}
 \end{center}
@@ -204,18 +205,18 @@ The production rules are
   \begin{tikzpicture}
     \node[mytext] (prodX) {X $\to$ X:};
     \node[mytext, right=of prodX] {
-      \ttfamily 5-AGGT\textcolor{magenta}{N}\textcolor{cyan}{CATCC}\textcolor{blue}{GGCGGA}\textcolor{magenta}{(N)}TGGASS-3\\
-      \ttfamily 3-\ \ \ \ \textcolor{magenta}{N}\textcolor{cyan}{GTAGG}\textcolor{blue}{CCGCCT}\textcolor{magenta}{(N)}ACCT\ \ -5
+      \ttfamily 5-AATT\textcolor{cyan}{GCGATG}\textcolor{blue}{GGCGGA}\textcolor{magenta}{(N)}AAAAAAA-3\\
+      \ttfamily 3-\ \ \ \ \textcolor{cyan}{CGCTAC}\textcolor{blue}{CCGCCT}\textcolor{magenta}{(N)}TTTTT\ \ -5
     };
     \node[mytext, below=of prodX] (prodY) {Y $\to$ YZ:};
     \node[mytext, right=of prodY] {
-      \ttfamily 5-CTTG\textcolor{magenta}{N}\textcolor{cyan}{CATCC}\textcolor{blue}{GGCGGA}\textcolor{magenta}{(N)}GTTCAGCTSS-3\\
-      \ttfamily 3-\ \ \ \ \textcolor{magenta}{N}\textcolor{cyan}{GTAGG}\textcolor{blue}{CCGCCT}\textcolor{magenta}{(N)}CAAGTCGA\ \ -5
+      \ttfamily 5-AACC\textcolor{cyan}{GCGATG}\textcolor{blue}{GGCGGA}\textcolor{magenta}{(N)}AAACCAAAGGAA-3\\
+      \ttfamily 3-\ \ \ \ \textcolor{cyan}{CGCTAC}\textcolor{blue}{CCGCCT}\textcolor{magenta}{(N)}TTTGGTTTCC\ \ -5
     };
     \node[mytext, below=of prodY] (prodZ) {Z $\to$ ZZ:};
     \node[mytext, right=of prodZ] {
-      \ttfamily 5-TCGA\textcolor{magenta}{N}\textcolor{cyan}{CATCC}\textcolor{blue}{GGCGGA}\textcolor{magenta}{(N)}AGCTAGCTSS-3\\
-      \ttfamily 3-\ \ \ \ \textcolor{magenta}{N}\textcolor{cyan}{GTAGG}\textcolor{blue}{CCGCCT}\textcolor{magenta}{(N)}TCGATCGA\ \ -5
+      \ttfamily 5-AAGG\textcolor{cyan}{GCGATG}\textcolor{blue}{GGCGGA}\textcolor{magenta}{(N)}AAAGGAAAGGAA-3\\
+      \ttfamily 3-\ \ \ \ \textcolor{cyan}{CGCTAC}\textcolor{blue}{CCGCCT}\textcolor{magenta}{(N)}TTTCCTTTCC\ \ -5
     };
   \end{tikzpicture}
 \end{center}
