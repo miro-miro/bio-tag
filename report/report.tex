@@ -70,9 +70,9 @@ BCOR5mm, % Binding correction
 
 \tableofcontents % Print the table of contents
 
-\listoffigures % Print the list of figures
+% \listoffigures % Print the list of figures
 
-\listoftables % Print the list of tables
+% \listoftables % Print the list of tables
 
 %----------------------------------------------------------------------------------------
 %	ABSTRACT
@@ -128,23 +128,51 @@ we presented during the last lecture).
 \section{Biological Tag System}
 
 As an alphabet we use short sequences of DNA which encode a single symbol each.
-The program is encoded through a set of dsDNA sequences, with sticky ends on
-both sides, that encode the production rules.
+Our input consists of a sequence of these encodings, where the first symbol
+forms a sticky end and the last symbol is also partially exposed as a sticky
+end.
+This enables recognition of the first symbol and appending to the end by
+formation of plasmids.
+
+The program is encoded through a set of dsDNA sequences a sticky end one end for
+symbol recognition.
+These dsDNA sequences encode the production rules, i.e. they encode, the
+mapping from each symbol to the string that is supposed to be appended.
 The production rules consist of four parts.
 
 \begin{enumerate}
-  \item Recognition site: A sticky end that binds to the first symbol of the sequence
-  \item FokI binding domains: Two FokI binding domains oriented in opposite directions and some padding
-  \item Production sequence: The sequence of symbols that needs to be appended, based on the recognition site
-  \item Terminal site: A sticky end for each possible symbol at the end of the current string.
+  \item Recognition site: A sticky end consisting of four nucleotides encoding
+    the symbol to be recognized.
+  \item Restriction target: Two restriction enzyme targets. The first one
+    deletes two symbols and opens a sticky end for recognition of the next
+    read out. The second one prepares a sticky end on the current string to
+    append the next tag.
+  \item Production sequence: The sequence of symbols or tag, that needs to be
+    appended. It only depends on the recognition site.
+  \item Terminal site: A sticky end for each possible sequence at the end of
+    the string that has to be opened by CRISPR/Cpf1
 \end{enumerate}
 
-This also means, that for an alphabet with $n$ symbols, we need $n^2$ production
-rule sequences.
+This also means, that for an alphabet with $n$ symbols and $m$ possible terminal
+sites, we need $nm$ production rule sequences.
 There are $n$ production rules, which map the first symbol to a sequence, and
-then $n$ possible symbols, we have to append the sequence to.
-So for each of the $n$ production rules there are $n$ similar versions, that
-just differ by the sticky end.
+then $m$ possible terminal sites.
+So for each of the $n$ production rules there are $m$ similar versions, that
+are equal apart from their terminal site.
+
+The sticky end of the recognition site is a 5'-overhang of length 4, while
+the recognition site is a 5'-overhang with length 5.
+After the recognition site ligates to the production rule sequence, CRISPR/Cpf1
+with a corresponding guide RNA can be used to detect the ligation and open the
+sticky end on the terminal site.
+
+Subsequently the terminal site can ligate which leads to the formation of a
+plasmid.
+After knockdown of the guide RNA, we can activate the restriction enzymes.
+The first one, EciI, will remove 10 nucleotides and open a sticky end of length
+4 and a 5'-overhang.
+Two of the nucleotides can be uniquely chosen for a symbol, while the other two
+are part of the PAM.
 
 \subsection{Example}
 To illustrate this design, we give an example encoding of a program that
@@ -152,109 +180,56 @@ multiplies two powers of two.
 The three symbols, X, Y and Z can be encoded as
 
 \begin{center}
-\begin{tikzpicture}
-  \node[mytext]  (letX)    {X:};
-  \node[mytext, right of=letX]  (seqX)   {\ttfamily ACCT\\\ttfamily TGGA};
-  \node[mytext, right of=seqX]  (letY)    {Y:};
-  \node[mytext, right of=letY]  (seqY)   {\ttfamily CAAG\\\ttfamily GTTC};
-  \node[mytext, right of=seqY]  (letZ)    {Z:};
-  \node[mytext, right of=letZ]  (seqZ)   {\ttfamily TCGA\\\ttfamily AGCT};
-\end{tikzpicture}
+  \begin{tikzpicture}
+    \node[mytext]  (letX)    {X:};
+    \node[mytext, right of=letX]  (seqX)   {\ttfamily ACCT\\\ttfamily TGGA};
+    \node[mytext, right of=seqX]  (letY)    {Y:};
+    \node[mytext, right of=letY]  (seqY)   {\ttfamily CAAG\\\ttfamily GTTC};
+    \node[mytext, right of=seqY]  (letZ)    {Z:};
+    \node[mytext, right of=letZ]  (seqZ)   {\ttfamily TCGA\\\ttfamily AGCT};
+  \end{tikzpicture}
 \end{center}
 Thus the initial input of a program that multiplies 2 by 2, XXYY, is
 
 \begin{center}
   \begin{tikzpicture}
-    \node[mytext] (seq) {\ttfamily ACCTACCTCAAG....\\\ttfamily ....TGGAGTTCGTTC};
+    \node[mytext] (seq) {
+      \ttfamily 5-ACCTACCTCAAGCAAG-3\\
+      \ttfamily 3-\ \ \ \ TGGAGTTCGT\ \ -5
+    };
   \end{tikzpicture}
 \end{center}
-The production rules
+The production rules are
 \begin{center}
   \begin{tikzpicture}
-    \node[mytext] {$X \to X\colon$};
+    \node[mytext] (prodX) {X $\to$ X:};
+    \node[mytext, right=of prodX] {
+      \ttfamily 5-AGGT\textcolor{magenta}{N}\textcolor{cyan}{CATCC}\textcolor{blue}{GGCGGA}\textcolor{magenta}{(N)}TGGASS-3\\
+      \ttfamily 3-\ \ \ \ \textcolor{magenta}{N}\textcolor{cyan}{GTAGG}\textcolor{blue}{CCGCCT}\textcolor{magenta}{(N)}ACCT\ \ -5
+    };
+    \node[mytext, below=of prodX] (prodY) {Y $\to$ YZ:};
+    \node[mytext, right=of prodY] {
+      \ttfamily 5-CTTG\textcolor{magenta}{N}\textcolor{cyan}{CATCC}\textcolor{blue}{GGCGGA}\textcolor{magenta}{(N)}GTTCAGCTSS-3\\
+      \ttfamily 3-\ \ \ \ \textcolor{magenta}{N}\textcolor{cyan}{GTAGG}\textcolor{blue}{CCGCCT}\textcolor{magenta}{(N)}CAAGTCGA\ \ -5
+    };
+    \node[mytext, below=of prodY] (prodZ) {Z $\to$ ZZ:};
+    \node[mytext, right=of prodZ] {
+      \ttfamily 5-TCGA\textcolor{magenta}{N}\textcolor{cyan}{CATCC}\textcolor{blue}{GGCGGA}\textcolor{magenta}{(N)}AGCTAGCTSS-3\\
+      \ttfamily 3-\ \ \ \ \textcolor{magenta}{N}\textcolor{cyan}{GTAGG}\textcolor{blue}{CCGCCT}\textcolor{magenta}{(N)}TCGATCGA\ \ -5
+    };
   \end{tikzpicture}
 \end{center}
+where the letters N correspond to padding (magenta), the cyan sequence is the
+FokI target site, the blue sequence is the EciI target site, and the S represent
+the possible terminal sequences.
 
 %----------------------------------------------------------------------------------------
 %	RESULTS AND DISCUSSION
 %----------------------------------------------------------------------------------------
 
-\section{Results and Discussion}
+\section{Discussion}
 
-Reference to Figure~\vref{fig:gallery}. % The \vref command specifies the location of the reference
-
-\begin{figure}[tb]
-\centering
-\includegraphics[width=0.5\columnwidth]{GalleriaStampe}
-\caption[An example of a floating figure]{An example of a floating figure (a reproduction from the \emph{Gallery of prints}, M.~Escher,\index{Escher, M.~C.} from \url{http://www.mcescher.com/}).} % The text in the square bracket is the caption for the list of figures while the text in the curly brackets is the figure caption
-\label{fig:gallery}
-\end{figure}
-
-\lipsum[10] % Dummy text
-
-%------------------------------------------------
-
-\subsection{Subsection}
-
-\lipsum[11] % Dummy text
-
-\subsubsection{Subsubsection}
-
-\lipsum[12] % Dummy text
-
-\begin{description}
-\item[Word] Definition
-\item[Concept] Explanation
-\item[Idea] Text
-\end{description}
-
-\lipsum[12] % Dummy text
-
-\begin{itemize}[noitemsep] % [noitemsep] removes whitespace between the items for a compact look
-\item First item in a list
-\item Second item in a list
-\item Third item in a list
-\end{itemize}
-
-\subsubsection{Table}
-
-\lipsum[13] % Dummy text
-
-\begin{table}[hbt]
-\caption{Table of Grades}
-\centering
-\begin{tabular}{llr}
-\toprule
-\multicolumn{2}{c}{Name} \\
-\cmidrule(r){1-2}
-First name & Last Name & Grade \\
-\midrule
-John & Doe & $7.5$ \\
-Richard & Miles & $2$ \\
-\bottomrule
-\end{tabular}
-\label{tab:label}
-\end{table}
-
-Reference to Table~\vref{tab:label}. % The \vref command specifies the location of the reference
-
-%------------------------------------------------
-
-\subsection{Figure Composed of Subfigures}
-
-Reference the figure composed of multiple subfigures as Figure~\vref{fig:esempio}. Reference one of the subfigures as Figure~\vref{fig:ipsum}. % The \vref command specifies the location of the reference
-
-\lipsum[15-18] % Dummy text
-
-\begin{figure}[tb]
-\centering
-\subfloat[A city market.]{\includegraphics[width=.45\columnwidth]{Lorem}} \quad
-\subfloat[Forest landscape.]{\includegraphics[width=.45\columnwidth]{Ipsum}\label{fig:ipsum}} \\
-\subfloat[Mountain landscape.]{\includegraphics[width=.45\columnwidth]{Dolor}} \quad
-\subfloat[A tile decoration.]{\includegraphics[width=.45\columnwidth]{Sit}}
-\caption[A number of pictures.]{A number of pictures with no common theme.} % The text in the square bracket is the caption for the list of figures while the text in the curly brackets is the figure caption
-\label{fig:esempio}
-\end{figure}
+what
 
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
