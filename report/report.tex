@@ -134,41 +134,79 @@ presented during the last lecture).
 
 As an alphabet we use short sequences of DNA which encode a single symbol each.
 Our input consists of a sequence of these encodings, where the first symbol
-forms a sticky end and the last symbol is also partially exposed as a sticky
-end. This enables recognition of the first symbol and appending to the end by
-formation of plasmids.
+forms a sticky end and the end of the sequence is also exposed as a sticky end.
+The general idea is to recognize the first symbol and then conditionally append
+the desired production sequence.
 
-The program is encoded through a set of dsDNA sequences a sticky end on one end
-for symbol recognition. These dsDNA sequences encode the production rules, i.e.
-they encode, the mapping from each symbol to the string that is supposed to be
-appended. The production rules consist of four parts.
+This poses the first big design challenge. On one end of our input we have a
+specific sticky end, but on the other end we have an unspecific one. Depending
+on the one on the front, we need to make sure we only append the correct
+sequence. Naturally two basic approaches come to mind.
 
 \begin{enumerate}
-  \item Recognition site: A sticky end consisting of four nucleotides encoding
-    the symbol to be recognized.
-  \item Restriction target: Two restriction enzyme targets. The first one
-    deletes two symbols and opens a sticky end for recognition of the next
-    read out. The second one prepares a sticky end on the current string to
-    append the next tag.
-  \item Production sequence: The sequence of symbols or tag, that needs to be
-    appended. It only depends on the recognition site.
-  \item Terminal site: A unique terminal sequence of length four that can be cut
-    into a sticky end and support appending a sequence.
+  \item Produce or activate the production sequence after detection
+  \item Form a plasmid, where the production rule is a sequence connecting both
+    ends
 \end{enumerate}
 
-The recognition site is a 5' overhang of length 4 and can only bind to a
-specific symbol on the current working string. 
-After the recognition site ligates to the production rule sequence, CRISPR/Cpf1
-with a corresponding guide RNA can be used to detect the ligation and open the
-sticky end of the terminal site.
+\subsection{Plasmid Formation}
 
-Subsequently the terminal site can ligate which leads to the formation of a
-plasmid. After knockdown of the guide RNA, we can activate the restriction
-enzymes. The first one, EciI, will remove 10 nucleotides and open a sticky end
-of length 4 and a 5'-overhang. Two of the nucleotides can be uniquely chosen for
-a symbol, while the other two are part of the PAM.
+Forming a plasmid by connecting the two ends of the input sequence with
+production rule sequences seems very elegant at a first glance. The information
+is transfered from beginning to end of the sequence by a single fitting
+sequence. However, we can not ensure that plasmids properly ligate. It is
+possible, even very likely, that two different production sequences ligate to
+each end of the input sequence, and thus break the computation.
 
-\subsection{Restriction Enzymes}
+A program can be encoded as a set of production rules. Each production rule
+contains the following four parts.
+
+ \begin{enumerate}
+   \item Recognition site: A sticky end consisting of four nucleotides encoding
+     the symbol to be recognized.
+   \item Restriction target: Two restriction enzyme targets. The first one
+     deletes two symbols and opens a sticky end for recognition of the next
+     read out. The second one prepares a sticky end on the current string to
+     append the next tag.
+   \item Production sequence: The sequence of symbols or tag, that needs to be
+     appended. It only depends on the recognition site.
+   \item Terminal site: A unique terminal sequence of length four that can be cut
+     into a sticky end and support appending a sequence.
+ \end{enumerate}
+
+By opening up the sticky sequence after ligation of the recognition symbol, the
+problem, where production sequences form chains rather that plasmids can be
+solved. This could possibly be done using CRISPR/Cpf1. CRISPR/Cpf1 creates a 5'
+overhang of length 4, 21 nt upstream from the PAM. The required PAM is 4 nt
+long and would need to be contained between every symbol. Then a properly
+constructed guide RNA can detect and cut. Putting a PAM between every symbol
+causes sequences to be very long. Thus the cut distance of 21 nt is not
+sufficient anymore. Also it imposes large constraints on the number of symbols
+that can be encoded, since type IIS restriction enzymes do not cut any further
+than 14 nt.
+
+Unfortunately to this point we were unable to come up with a solution for this
+problem. Restriction enzymes type IIIS, which cut much further away from the
+recognition site, do not cut sufficiently precise.
+
+% The program is encoded through a set of dsDNA sequences a sticky end on one end
+% for symbol recognition. These dsDNA sequences encode the production rules, i.e.
+% they encode, the mapping from each symbol to the string that is supposed to be
+% appended. The production rules consist of four parts.
+
+% The recognition site is a 5' overhang of length 4 and can only bind to a
+% specific symbol on the current working string. 
+% After the recognition site ligates to the production rule sequence, CRISPR/Cpf1
+% with a corresponding guide RNA can be used to detect the ligation and open the
+% sticky end of the terminal site.
+
+% Subsequently the terminal site can ligate which leads to the formation of a
+% plasmid. After knockdown of the guide RNA, we can activate the restriction
+% enzymes. The first one, EciI, will remove 10 nucleotides and open a sticky end
+% of length 4 and a 5'-overhang. Two of the nucleotides can be uniquely chosen for
+% a symbol, while the other two are part of the PAM.
+
+\subsubsection{Restriction Enzymes}
 
 The constraints, restriction enzymes impose on the design of this system, are
 very strong. Most Type IIS restriction enzymes do not cut sufficiently far away
@@ -185,7 +223,7 @@ cut distance may vary by two nucleotides and the cut length may also vary by
 about two nucleotides. However, to fitting sticky ends we need to cut very
 precise.
 
-\subsection{Example}
+\subsubsection{Example}
 To illustrate this design, we give an example encoding of a program that
 multiplies two powers of two. The three symbols, X, Y and Z can be encoded as
 
