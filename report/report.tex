@@ -82,14 +82,12 @@ BCOR5mm, % Binding correction
 
 Models of computation are theoretical models, that are used to prove what kind
 of computations are possible. One of the most studied models is the universal
-Turing machine, which largely defines what computation means nowadays.
-Another model, the 2 tag system, can be used to emulate a universal Turing
-machine.
-It works on a string by removing symbols from the front and conditionally
-appending symbols at the end.
-Design of a 2 tag system as a biomolecular process allows us to compute any
-problem that can be solved by a universal Turing machine.
-We propose an implementation which uses DNA ligation and restriction enzymes to
+Turing machine, which largely defines what computation means nowadays. Another
+model, the 2 tag system, can be used to emulate a universal Turing machine. It
+works on a string by removing symbols from the front and conditionally appending
+symbols at the end. Design of a 2 tag system as a biomolecular process allows us
+to compute any problem that can be solved by a universal Turing machine. We
+propose an implementation which uses DNA ligation and restriction enzymes to
 compute a program that is implemented in a set of engineered sequences.
 
 %----------------------------------------------------------------------------------------
@@ -113,32 +111,37 @@ compute a program that is implemented in a set of engineered sequences.
 A $m$ tag system is a computational model, that operates on a string of symbols.
 At each step it reads the first symbol, removes $m$ symbols from the head of the
 string and then appends a sequence of symbols based on the symbol it read to the
-string.
-Mathematically the tag system can be described by the number of symbols that
-are removed $m$, the alphabet $\Sigma$ of symbols used and the production rules,
-$\Sigma \to \Sigma*$.
+string. Mathematically the tag system can be described by the number of symbols
+that are removed $m$, the alphabet $\Sigma$ of symbols used and the production
+rules, $\Sigma \to \Sigma*$.
 
 % 2 powers of 2 example here.
 
 In the following sections we will first propose a general outline of an
-implementation of a 2 tag system and discuss it's features and limitations
-based on the processes involved and earlier iterations (namely the iteration
-we presented during the last lecture).
+implementation of a 2 tag system and discuss it's features and limitations based
+on the processes involved and earlier iterations (namely the iteration we
+presented during the last lecture).
 
 \section{Biological Tag System}
+
+\begin{note}
+  Unfortunately it turns out that the design of a biological tag system is not
+  very easy. (Who would have thought...) However as we still consider it quite
+  an interesting idea, we decided to design one for the purpose of discussing
+  the solution, its problems and workarounds and the requirements to actually
+  make it work.
+\end{note}
 
 As an alphabet we use short sequences of DNA which encode a single symbol each.
 Our input consists of a sequence of these encodings, where the first symbol
 forms a sticky end and the last symbol is also partially exposed as a sticky
-end.
-This enables recognition of the first symbol and appending to the end by
+end. This enables recognition of the first symbol and appending to the end by
 formation of plasmids.
 
-The program is encoded through a set of dsDNA sequences a sticky end one end for
-symbol recognition.
-These dsDNA sequences encode the production rules, i.e. they encode, the
-mapping from each symbol to the string that is supposed to be appended.
-The production rules consist of four parts.
+The program is encoded through a set of dsDNA sequences a sticky end on one end
+for symbol recognition. These dsDNA sequences encode the production rules, i.e.
+they encode, the mapping from each symbol to the string that is supposed to be
+appended. The production rules consist of four parts.
 
 \begin{enumerate}
   \item Recognition site: A sticky end consisting of four nucleotides encoding
@@ -154,50 +157,43 @@ The production rules consist of four parts.
 \end{enumerate}
 
 This also means, that for an alphabet with $n$ symbols and $m$ possible terminal
-sites, we need $nm$ production rule sequences.
-There are $n$ production rules, which map the first symbol to a sequence, and
-then $m$ possible terminal sites.
-So for each of the $n$ production rules there are $m$ similar versions, that
-are equal apart from their terminal site.
+sites, we need $nm$ production rule sequences. There are $n$ production rules,
+which map the first symbol to a sequence, and then $m$ possible terminal sites.
+So for each of the $n$ production rules there are $m$ similar versions, that are
+equal apart from their terminal site.
 
-The sticky end of the recognition site is a 5'-overhang of length 4, while
-the recognition site is a 5'-overhang with length 5.
-After the recognition site ligates to the production rule sequence, CRISPR/Cpf1
-with a corresponding guide RNA can be used to detect the ligation and open the
-sticky end on the terminal site.
+The sticky end of the recognition site is a 5'-overhang of length 4, while the
+recognition site is a 5'-overhang with length 5. After the recognition site
+ligates to the production rule sequence, CRISPR/Cpf1 with a corresponding guide
+RNA can be used to detect the ligation and open the sticky end on the terminal
+site.
 
 Subsequently the terminal site can ligate which leads to the formation of a
-plasmid.
-After knockdown of the guide RNA, we can activate the restriction enzymes.
-The first one, EciI, will remove 10 nucleotides and open a sticky end of length
-4 and a 5'-overhang.
-Two of the nucleotides can be uniquely chosen for a symbol, while the other two
-are part of the PAM.
+plasmid. After knockdown of the guide RNA, we can activate the restriction
+enzymes. The first one, EciI, will remove 10 nucleotides and open a sticky end
+of length 4 and a 5'-overhang. Two of the nucleotides can be uniquely chosen for
+a symbol, while the other two are part of the PAM.
 
 \subsection{Restriction Enzymes}
 
 The constraints, restriction enzymes impose on the design of this system, are
-very strong.
-Most Type IIS restriction enzymes do not cut sufficiently far away to remove
-multiple symbols, while still maintaining PAMs or other spacer sequences
-inbetween the symbols.
-Given that the CRISPR/Cpf1 complex creates overhangs of length 4, we actually
-need to create spacer sequence of length 4, which is the same between all
-symbols.
-Thus distance from the target size we require the restriction enzyme to cut is
-$4 + x + 4 + x$, where $x$ is the number of nucleotides we use for encoding the
-symbols.
+very strong. Most Type IIS restriction enzymes do not cut sufficiently far away
+to remove multiple symbols, while still maintaining PAMs or other spacer
+sequences inbetween the symbols. Given that the CRISPR/Cpf1 complex creates
+overhangs of length 4, we actually need to create spacer sequence of length 4,
+which is the same between all symbols. Thus distance from the target size we
+require the restriction enzyme to cut is $4 + x + 4 + x$, where $x$ is the
+number of nucleotides we use for encoding the symbols.
 
 Restriction enzymes that cut much further away than 10 nucleotides, namely type
 IIIS restriction enzymes, unfortunately do so in a less precise way, i.e. the
 cut distance may vary by two nucleotides and the cut length may also vary by
-about two nucleotides.
-However, to fitting sticky ends we need to cut very precise.
+about two nucleotides. However, to fitting sticky ends we need to cut very
+precise.
 
 \subsection{Example}
 To illustrate this design, we give an example encoding of a program that
-multiplies two powers of two.
-The three symbols, X, Y and Z can be encoded as
+multiplies two powers of two. The three symbols, X, Y and Z can be encoded as
 
 \begin{center}
   \begin{tikzpicture}

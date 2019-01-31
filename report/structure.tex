@@ -48,6 +48,27 @@ dottedtoc % Dotted lines leading to the page numbers in the table of contents
 \usepackage{tikz}
   \usetikzlibrary{positioning}
 
+\usepackage[most]{tcolorbox}
+
+\makeatletter
+\newtcolorbox{note}[1][]{%
+  enhanced jigsaw, % better frame drawing
+  borderline west={1pt}{0pt}{black}, % straigh vertical line at the left edge
+  sharp corners, % No rounded corners
+  boxrule=0pt, % no real frame,
+  fonttitle={\large\bfseries},
+  coltitle={black},  % Black colour for title
+  title={Note:\ },  % Fixed title
+  attach title to upper, % Move the title into the box,
+  right=0pt,
+  top=0pt,
+  bottom=0pt,
+  frame hidden,
+  baseline={\tcb@height-2\kvtcb@boxsep+\baselineskip-2\lineskip}, %%%% Needs more to be done for other setups
+  #1
+}
+\makeatother
+
 %----------------------------------------------------------------------------------------
 %	THEOREM STYLES
 %---------------------------------------------------------------------------------------
