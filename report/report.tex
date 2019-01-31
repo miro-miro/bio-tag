@@ -152,21 +152,15 @@ appended. The production rules consist of four parts.
     append the next tag.
   \item Production sequence: The sequence of symbols or tag, that needs to be
     appended. It only depends on the recognition site.
-  \item Terminal site: A sticky end for each possible sequence at the end of
-    the string that has to be opened by CRISPR/Cpf1
+  \item Terminal site: A unique terminal sequence of length four that can be cut
+    into a sticky end and support appending a sequence.
 \end{enumerate}
 
-This also means, that for an alphabet with $n$ symbols and $m$ possible terminal
-sites, we need $nm$ production rule sequences. There are $n$ production rules,
-which map the first symbol to a sequence, and then $m$ possible terminal sites.
-So for each of the $n$ production rules there are $m$ similar versions, that are
-equal apart from their terminal site.
-
-The sticky end of the recognition site is a 5'-overhang of length 4, while the
-recognition site is a 5'-overhang with length 5. After the recognition site
-ligates to the production rule sequence, CRISPR/Cpf1 with a corresponding guide
-RNA can be used to detect the ligation and open the sticky end on the terminal
-site.
+The recognition site is a 5' overhang of length 4 and can only bind to a
+specific symbol on the current working string. 
+After the recognition site ligates to the production rule sequence, CRISPR/Cpf1
+with a corresponding guide RNA can be used to detect the ligation and open the
+sticky end of the terminal site.
 
 Subsequently the terminal site can ligate which leads to the formation of a
 plasmid. After knockdown of the guide RNA, we can activate the restriction
