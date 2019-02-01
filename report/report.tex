@@ -70,7 +70,7 @@ BCOR5mm, % Binding correction
 
 \tableofcontents % Print the table of contents
 
-% \listoffigures % Print the list of figures
+% \listoffigures % Print the list of res
 
 % \listoftables % Print the list of tables
 
@@ -83,7 +83,7 @@ BCOR5mm, % Binding correction
 Models of computation are theoretical models, that are used to prove what kind
 of computations are possible. One of the most studied models is the universal
 Turing machine, which largely defines what computation means nowadays. Another
-model, the 2 tag system, can be used to emulate a universal Turing machine. It
+model, the 2 tag system, can be used to emulate a universal Turing machine \cite{Cocke1964}. It
 works on a string by removing symbols from the front and conditionally appending
 symbols at the end. Design of a 2 tag system as a biomolecular process allows us
 to compute any problem that can be solved by a universal Turing machine. We
@@ -279,8 +279,8 @@ small for short computations.
 After reviewing the plasmid formation, we revisited the two step protocol. Using
 the idea of detecting ligation of the recognition site using CRISPR, a cascade
 can be activated that results in the preparation of the correct production rule.
-Instead of using CRISPR/Cpf1, we can use a modified version of Cas9, dCas9, that
-allows promotion of transcription. Using dCas9 and a properly constructed sgRNA
+Instead of using CRISPR/Cpf1, we can use a modified version of Cas9 \cite{Bikard2013}, dCas9, that
+allows promotion of transcription. Using dCas9 \cite{Gilbert2013} and a properly constructed sgRNA
 allows for conditional transcription of another sgRNA, that can then be used to
 activate the correct production rule using a CRISPR/Cpf1 complex to produce a
 terminal end.
@@ -288,9 +288,8 @@ terminal end.
 In this method small nucleotide sequences of length 4 can be used to encode the
 symbol. The program can then be defined by two parts:
 \begin{enumerate}
-  \item Detection sequence: It has symbol recognition site, a restriction enzyme
-    target, a buffer sequence followed by the PAM (GG) followed by more buffer
-    and a Promoter for an sgRNA that is encoded. Transcription of the sgRNA can
+  \item Detection sequence: It has symbol recognition site, buffer nucleotide, a restriction enzyme
+    target, a buffer sequence followed by the PAM (GG) and a Promoter for an sgRNA that is encoded. Transcription of the sgRNA can
     be activated after ligation of the recognition site. The buffer between the
     restriction enzyme and PAM is constructed such that the sgRNA activating
     transcription overlaps the ligation site. The restriction enzyme target is
@@ -323,13 +322,19 @@ recognition site.
 
 From 5' to 3' we have the sgRNA for CRISPR/Cpf1, we then have the terminal site,
 which will be opened by Cpf1, followed by the sequence of symbols that needs to
-be appended. Each spaced out by CC, which is the PAM required for detection. At
-last we have a buffer of one nt and a target sequence for FokI (GTAGG), which
+be appended. At last we have a buffer of one nt and a target sequence for FokI (GTAGG), which
 generates a new terminal site. BsaI cuts one nucleotide from its target site and
 creates a 5' overhang of size 4.
 
 Note that the terminal site contains two nt that are unique for each symbol. We
-thus need a production sequence for every possible terminal sequence. 
+thus need a production sequence for every possible terminal sequence.
+
+\begin{figure}[h]
+  \includegraphics[width=15cm]{sequences.pdf}
+  \centering
+  \caption{Visual representation of the Detection and Production sequences.}
+\end{figure}
+
 
 \subsubsection{Process outline}
 
@@ -351,7 +356,10 @@ the roles of the different sequences and their interaction with each other.
     the detection and production sequences
 \end{enumerate}
 
-\subsubsection{Example}
+\begin{figure}[h]
+  \includegraphics[width=15cm]{process.pdf}
+  \caption{Outline of the process for a Two Step protocol}
+\end{figure}
 
 %----------------------------------------------------------------------------------------
 % RESULTS AND DISCUSSION
