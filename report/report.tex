@@ -108,14 +108,42 @@ compute a program that is implemented in a set of engineered sequences.
 
 \section{Introduction}
 
-A $m$ tag system is a computational model, that operates on a string of symbols.
-At each step it reads the first symbol, removes $m$ symbols from the head of the
-string and then appends a sequence of symbols based on the symbol it read to the
+An $m$ tag system is a computational model, that operates on a string of symbols.
+At each step it reads the first symbol, removes $m$ symbols from the HEAD of the
+string and then appends to its TAIL a sequence of symbols based on the symbol it read to the
 string. Mathematically the tag system can be described by the number of symbols
 that are removed $m$, the alphabet $\Sigma$ of symbols used and the production
 rules, $\Sigma \to \Sigma*$.
 
-% 2 powers of 2 example here.
+\subsection{Example: multiplying two powers of two}
+An example implementation of a 2-tag system is multiplying two powers of two, whereby the initial input string consists of \textbf{x} symbols $X$, and \textbf{y} symbols $Y$, where \textbf{x} and \textbf{y} are powers of 2. The string should be converted to $\mathbf{x}\times \mathbf{y}$ symbols $Z$ Threfore to calculate $2^1\times2^2$, then $\mathbf{x}=2,\ \mathbf{y}=4$, the initial string will be $XXYYYY$ and final output will be $ZZZZZZZZ$.
+
+\begin{lstlisting}[
+  escapeinside={(*}{*)},
+  basicstyle=\ttfamily\small
+  ]
+  
+  2-tag system
+  Alphabet: {X, Y, Z}
+  Production rules:
+     X -> X
+     Y -> YZYZ
+     Z -> ZZ
+
+     Calculating (*$2\times4$*):
+     XXYYYY
+       YYYYX
+         YYXYZYZ
+           XYZYZYZYZ
+             XYZYZYZYZ
+               ZYZYZYZX
+                 ZYZYZXZZ
+                    ZYZYZZZZ
+                      ZYZZZZZZ
+                        ZZZZZZZZ
+   
+\end{lstlisting}
+
 
 In the following sections we will first propose a general outline of an
 implementation of a 2 tag system and discuss it's features and limitations based
