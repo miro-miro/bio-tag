@@ -289,7 +289,7 @@ terminal end.
 In this method small nucleotide sequences of length 4 can be used to encode the
 symbol. The program can then be defined by two parts:
 \begin{enumerate}
-  \item Detection sequence: It has recognition site, a restriction enzyme
+  \item Detection sequence: It has symbol recognition site, a restriction enzyme
     target, a buffer sequence followed by the PAM (GG) followed by more buffer
     and a Promoter for an sgRNA that is encoded. Transcription of the sgRNA can
     be activated after ligation of the recognition site. The buffer between the
@@ -311,12 +311,12 @@ inbetween all symbols, we can only use 3 nt for symbol encoding.
 \subsubsection{Detection Sequence}
 
 From 3' to 5' the detection sequence starts with the sticky end, that is the
-recognition site, directly followed by a buffer nucleotide and a target sequence
-for BtgZI (GTAGCG). After that we require the correct amount of spacer
+symbol recognition site, directly followed by a buffer nucleotide and a target sequence
+for FokI (GTAGG). After that we require the correct amount of spacer
 nucleotides before the PAM. The entire sequence, including the recognition site,
 can be targeted by sgRNA, that activates transcription of sgRNA.
 
-BtgZI creates a 5' overhang of length 4, 10 nucleotides downstream from its
+FokI creates a 5' overhang of length 4, 9 nucleotides downstream from its
 target site. Once added / activated, it will delete two symbols and create a new
 recognition site.
 
@@ -381,7 +381,20 @@ encoding nucleotides to 3 and alternating between having a buffer nucleotide on
 one or the other side to avoid plasmid formation. This however means that two
 input sequences would not be possible anymore.
 
-\subsection{Remaining Problems}
+\subsection{Scalability}
+
+In theory a system implementing tag systems would be scalable to multiple
+programs, using different sets of symbol encodings in parallel. The most direct
+constraint here is the number of nucleotides that are used for symbol encoding.
+These are constraint by the availability of restriction enzymes.
+
+In this design additionally the use of CRISPR based system may cause issues when
+running different instances parallel. It could be thought, however, that
+non-deterministic computations would theoretically be possible, by supplying
+more than one production rule for a given symbol. This does not improve the
+viability of the model though.
+
+
 
 Ideally we would like to avoid washing out anything. It makes the computations
 time and resource expensive. However, then we are unable to ensure activation of
@@ -402,6 +415,8 @@ problems that we encountered.
 Further it is unclear if the detection using CRISPR/dCas9 activation is actually
 feasible. There might be a lot of leakage caused by the promoter that gets
 activated, which will then cause wrong computations to accumulate over time.
+
+\section{Conclusion}
 
 The focus of our design is clearly on conditionally appending a sequence
 depending on the first symbol. There are several problems that we were unable to
