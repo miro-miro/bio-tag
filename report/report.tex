@@ -196,56 +196,56 @@ far away, we continue with the design and argue that for slow ligation and
 energetically favorable plasmid formation, the error rate may be suffiently
 small for short computations. 
 
-\subsubsection{Example}
+%% \subsubsection{Example}
 
-To illustrate this design, we give an example encoding of a program that
-multiplies two powers of two.
+%% To illustrate this design, we give an example encoding of a program that
+%% multiplies two powers of two.
 
-The three symbols, X, Y and Z can be encoded as
+%% The three symbols, X, Y and Z can be encoded as
 
-\begin{center}
-  \begin{tikzpicture}
-    \node[mytext]  (letX)    {X:};
-    \node[mytext, right of=letX]  (seqX)   {\ttfamily 5-AA-3\\\ttfamily 3-TT-5};
-    \node[mytext, right of=seqX]  (letY)    {Y:};
-    \node[mytext, right of=letY]  (seqY)   {\ttfamily 5-GG-3\\\ttfamily 3-CC-5};
-    \node[mytext, right of=seqY]  (letZ)    {Z:};
-    \node[mytext, right of=letZ]  (seqZ)   {\ttfamily 5-CC-3\\\ttfamily 3-GG-5};
-  \end{tikzpicture}
-\end{center}
-Thus the initial input of a program that multiplies 2 by 2, XXYY, is
+%% \begin{center}
+%%   \begin{tikzpicture}
+%%     \node[mytext]  (letX)    {X:};
+%%     \node[mytext, right of=letX]  (seqX)   {\ttfamily 5-AA-3\\\ttfamily 3-TT-5};
+%%     \node[mytext, right of=seqX]  (letY)    {Y:};
+%%     \node[mytext, right of=letY]  (seqY)   {\ttfamily 5-GG-3\\\ttfamily 3-CC-5};
+%%     \node[mytext, right of=seqY]  (letZ)    {Z:};
+%%     \node[mytext, right of=letZ]  (seqZ)   {\ttfamily 5-CC-3\\\ttfamily 3-GG-5};
+%%   \end{tikzpicture}
+%% \end{center}
+%% Thus the initial input of a program that multiplies 2 by 2, XXYY, is
 
-\begin{center}
-  \begin{tikzpicture}
-    \node[mytext] (seq) {
-      \ttfamily 5-AATTTAATTTGGTTTGGTTT-3\\
-      \ttfamily 3-\ \ \ \ ATTAAACCAAACCA\ \ -5
-    };
-  \end{tikzpicture}
-\end{center}
-The production rules are
-\begin{center}
-  \begin{tikzpicture}
-    \node[mytext] (prodX) {X $\to$ X:};
-    \node[mytext, right=of prodX] {
-      \ttfamily 5-AATT\textcolor{cyan}{GCGATG}\textcolor{blue}{GGCGGA}\textcolor{magenta}{(N)}AAAAAAA-3\\
-      \ttfamily 3-\ \ \ \ \textcolor{cyan}{CGCTAC}\textcolor{blue}{CCGCCT}\textcolor{magenta}{(N)}TTTTT\ \ -5
-    };
-    \node[mytext, below=of prodX] (prodY) {Y $\to$ YZ:};
-    \node[mytext, right=of prodY] {
-      \ttfamily 5-AACC\textcolor{cyan}{GCGATG}\textcolor{blue}{GGCGGA}\textcolor{magenta}{(N)}AAACCAAAGGAA-3\\
-      \ttfamily 3-\ \ \ \ \textcolor{cyan}{CGCTAC}\textcolor{blue}{CCGCCT}\textcolor{magenta}{(N)}TTTGGTTTCC\ \ -5
-    };
-    \node[mytext, below=of prodY] (prodZ) {Z $\to$ ZZ:};
-    \node[mytext, right=of prodZ] {
-      \ttfamily 5-AAGG\textcolor{cyan}{GCGATG}\textcolor{blue}{GGCGGA}\textcolor{magenta}{(N)}AAAGGAAAGGAA-3\\
-      \ttfamily 3-\ \ \ \ \textcolor{cyan}{CGCTAC}\textcolor{blue}{CCGCCT}\textcolor{magenta}{(N)}TTTCCTTTCC\ \ -5
-    };
-  \end{tikzpicture}
-\end{center}
-where the letters N correspond to padding (magenta), the cyan sequence is the
-FokI target site, the blue sequence is the EciI target site, and the S represent
-the possible terminal sequences.
+%% \begin{center}
+%%   \begin{tikzpicture}
+%%     \node[mytext] (seq) {
+%%       \ttfamily 5-AATTTAATTTGGTTTGGTTT-3\\
+%%       \ttfamily 3-\ \ \ \ ATTAAACCAAACCA\ \ -5
+%%     };
+%%   \end{tikzpicture}
+%% \end{center}
+%% The production rules are
+%% \begin{center}
+%%   \begin{tikzpicture}
+%%     \node[mytext] (prodX) {X $\to$ X:};
+%%     \node[mytext, right=of prodX] {
+%%       \ttfamily 5-AATT\textcolor{cyan}{GCGATG}\textcolor{blue}{GGCGGA}\textcolor{magenta}{(N)}AAAAAAA-3\\
+%%       \ttfamily 3-\ \ \ \ \textcolor{cyan}{CGCTAC}\textcolor{blue}{CCGCCT}\textcolor{magenta}{(N)}TTTTT\ \ -5
+%%     };
+%%     \node[mytext, below=of prodX] (prodY) {Y $\to$ YZ:};
+%%     \node[mytext, right=of prodY] {
+%%       \ttfamily 5-AACC\textcolor{cyan}{GCGATG}\textcolor{blue}{GGCGGA}\textcolor{magenta}{(N)}AAACCAAAGGAA-3\\
+%%       \ttfamily 3-\ \ \ \ \textcolor{cyan}{CGCTAC}\textcolor{blue}{CCGCCT}\textcolor{magenta}{(N)}TTTGGTTTCC\ \ -5
+%%     };
+%%     \node[mytext, below=of prodY] (prodZ) {Z $\to$ ZZ:};
+%%     \node[mytext, right=of prodZ] {
+%%       \ttfamily 5-AAGG\textcolor{cyan}{GCGATG}\textcolor{blue}{GGCGGA}\textcolor{magenta}{(N)}AAAGGAAAGGAA-3\\
+%%       \ttfamily 3-\ \ \ \ \textcolor{cyan}{CGCTAC}\textcolor{blue}{CCGCCT}\textcolor{magenta}{(N)}TTTCCTTTCC\ \ -5
+%%     };
+%%   \end{tikzpicture}
+%% \end{center}
+%% where the letters N correspond to padding (magenta), the cyan sequence is the
+%% FokI target site, the blue sequence is the EciI target site, and the S represent
+%% the possible terminal sequences.
 
 \subsection{Two Steps}
 
@@ -254,7 +254,7 @@ the idea of detecting ligation of the recognition site using CRISPR, a cascade
 can be activated that results in the preparation of the correct production rule.
 Instead of using CRISPR/Cpf1, we can use a modified version of Cas9, dCas9, that
 allows promotion of transcription. Using dCas9 and a properly constructed sgRNA
-allows for conditional construction of another sgRNA, that can then be used to
+allows for conditional transcription of another sgRNA, that can then be used to
 activate the corect production rule using a CRISPR/Cpf1 complex to produce a
 terminal end.
 
@@ -291,22 +291,77 @@ recognition site.
 \subsubsection{Production sequence}
 
 From 5' to 3' we have the sgRNA for CRISPR/Cpf1, we then have the terminal site,
-which will be opened by CPF1, followed by the sequence of symbols that needs to
-be appended. Each spaced out by CC, which is the PAM required for detection.
-At last we have a buffer of one nt and a target sequence for BsaI (GAGACC),
-which generates a new terminal site.
+which will be opened by Cpf1, followed by the sequence of symbols that needs to
+be appended. Each spaced out by CC, which is the PAM required for detection. At
+last we have a buffer of one nt and a target sequence for BsaI (GAGACC), which
+generates a new terminal site. BsaI cuts one nucleotide from its target site and
+creates a 5' overhang of size 4.
 
 Note that the terminal site contains two nt that are unique for each symbol. We
-tus need a production sequence for every possible terminal sequence. 
+thus need a production sequence for every possible terminal sequence. 
+
+\subsubsection{Process outline}
+
+Following there is a step by step outline of the processes involved, describing
+the roles of the different sequences and their interaction with each other.
+\begin{enumerate}
+  \item Detection sequence binds to first symbol in the input sequence and
+    ligates to it.
+  \item CRISPR/dCas9 is guided to the detection sequence and promotes
+    transcription sgRNA specific to the current symbol
+  \item CRISPR/Cpf1 is guided to a corresponding production sequence and creates
+    a sticky end for the terminal site.
+  \item Activated production sequences can now bind to the end of the input
+    string
+  \item Free detection and production sequences need to be washed out
+  \item Restriction enzymes can can be added and target their targeting sites,
+    to prepare the input string for the next computational step.
+  \item Restriction enzymes need to be removed or knocked out before addition of
+    the detection and production sequences
+\end{enumerate}
 
 \subsubsection{Example}
+
 %----------------------------------------------------------------------------------------
 % RESULTS AND DISCUSSION
 %----------------------------------------------------------------------------------------
 
 \section{Discussion}
 
-what else
+To conclude the report here are some of the problems we were unable to solve.
+
+Ideally we would like to avoid washing out anything. It makes the computations
+time and resource expensive. However, then we are unable to ensure activation of
+the right components at the right time. It would be thinkable to have some sort
+of clock that causes degration and/or inactivation of certain elements, but due
+to the many parts involved this is more of a thought than actually realistic
+application, because there are enzymes as well as specific sequences involved.
+The complexity that emerges from a design like that would certainly be beyond
+controlability.
+
+Washing out everything that may interfere with each other creates disadvantages,
+but beyond that it is also rather challenging. Specifically, we need to make
+sure we do not wash out the input string at any time. While we would be able to
+distinguish between used and unused elements, we can not properly distinguish
+between the recognition sequences and the input string while solving all other
+problems that we encountered.
+
+The focus of our design is clearly on conditionally appending a sequence
+depending on the first symbol. There are several problems that we were unable to
+solve completely. While some problems can be solved by complicating the system
+and adding more and more control mechanisms, there is the inherent problem of
+trying to make a stochastic system behave deterministically. The classical DNA
+computing machanisms use this characteristic to explore many solutions at the
+same time, while minimizing the number of constraints imposed to achieve a
+solution.
+
+The tag system is a way to deterministically formalize the way we think about
+computations and mathematically work with it, thus it is not quite suited for
+DNA computation. If one wanted to find existing computational models that are
+more suited for the description of biological computer, one might find those in
+the very advanced area of theoretical computer science, where probabilistic
+models are used to better understand the boundaries of approximation algorithms
+for NP-hard problems etc.
 
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
