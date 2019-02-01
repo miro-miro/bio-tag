@@ -286,15 +286,17 @@ allows for conditional transcription of another sgRNA, that can then be used to
 activate the corect production rule using a CRISPR/Cpf1 complex to produce a
 terminal end.
 
-In this method small nucleotide sequences that encode the symbol are used, each
-of them separated by a (N)GG PAM sequence, where (N) can be part of the
-sequence. The program can then be defined by two parts.
+In this method small nucleotide sequences of length 4 can be used to encode the
+symbol. The program can then be defined by two parts:
 \begin{enumerate}
   \item Detection sequence: It has recognition site, a restriction enzyme
-    target and encodes an sgRNA. Transcription of the sgRNA can be activated
-    upon ligation of the recognition site. The restriction enzyme target is used
-    to prepare the input for the next computational step. It deletes two symbols
-    and prepares the next recognition site.
+    target, a buffer sequence followed by the PAM (GG) followed by more buffer
+    and a Promoter for an sgRNA that is encoded. Transcription of the sgRNA can
+    be activated after ligation of the recognition site. The buffer between the
+    restriction enzyme and PAM is constructed such that the sgRNA activating
+    transcription overlaps the ligation site. The restriction enzyme target is
+    used to prepare the input for the next computational step. It deletes two
+    symbols and prepares the next recognition site.
   \item Production sequence: It encodes the symbols to be appended. It also
     provides a target for the sgRNA encoded by the detection sequence, such that
     a sticky end can be created when the sgRNA is present. Further is requires a
@@ -309,8 +311,10 @@ inbetween all symbols, we can only use 3 nt for symbol encoding.
 \subsubsection{Detection Sequence}
 
 From 3' to 5' the detection sequence starts with the sticky end, that is the
-recognition site, directly followed by a target sequence for BtgZI (GTAGCG),
-unique buffer nucleotides and then the encoded guide sequence.
+recognition site, directly followed by a buffer nucleotide and a target sequence
+for BtgZI (GTAGCG). After that we require the correct amount of spacer
+nucleotides before the PAM. The entire sequence, including the recognition site,
+can be targeted by sgRNA, that activates transcription of sgRNA.
 
 BtgZI creates a 5' overhang of length 4, 10 nucleotides downstream from its
 target site. Once added / activated, it will delete two symbols and create a new
@@ -321,7 +325,7 @@ recognition site.
 From 5' to 3' we have the sgRNA for CRISPR/Cpf1, we then have the terminal site,
 which will be opened by Cpf1, followed by the sequence of symbols that needs to
 be appended. Each spaced out by CC, which is the PAM required for detection. At
-last we have a buffer of one nt and a target sequence for BsaI (GAGACC), which
+last we have a buffer of one nt and a target sequence for FokI (GTAGG), which
 generates a new terminal site. BsaI cuts one nucleotide from its target site and
 creates a 5' overhang of size 4.
 
@@ -356,7 +360,28 @@ the roles of the different sequences and their interaction with each other.
 
 \section{Discussion}
 
-To conclude the report here are some of the problems we were unable to solve.
+\subsection{Input length}
+
+The input length can not be smaller that 1, because then we are unable to append
+another string. However the input may be arbitrary long.
+
+\subsection{Unique Connections}
+
+Using sgRNA to detect ligation, requires the use of $n$ sgRNAs for $n$ symbols
+in the alphabet. Further, since we have $n$ possible terminal sites, we also
+need $n$ different versions of the same production rule. For each of these $n$
+versions we can use the same activation sgRNA.
+
+If we use the symbols as recognition sites and terminal sites, we can not
+entirely avoid formation of plasmids by the input strings. This could be solved
+by using a 3' overhang on the recognition site while using a 5' overhang on the
+terminal site. However we could not find enzymes that create a 3' overhang far
+enough from their target site. This can be solved by reducing the number of
+encoding nucleotides to 3 and alternating between having a buffer nucleotide on
+one or the other side to avoid plasmid formation. This however means that two
+input sequences would not be possible anymore.
+
+\subsection{Remaining Problems}
 
 Ideally we would like to avoid washing out anything. It makes the computations
 time and resource expensive. However, then we are unable to ensure activation of
@@ -373,6 +398,10 @@ sure we do not wash out the input string at any time. While we would be able to
 distinguish between used and unused elements, we can not properly distinguish
 between the recognition sequences and the input string while solving all other
 problems that we encountered.
+
+Further it is unclear if the detection using CRISPR/dCas9 activation is actually
+feasible. There might be a lot of leakage caused by the promoter that gets
+activated, which will then cause wrong computations to accumulate over time.
 
 The focus of our design is clearly on conditionally appending a sequence
 depending on the first symbol. There are several problems that we were unable to
