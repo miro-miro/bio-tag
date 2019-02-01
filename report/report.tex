@@ -107,7 +107,6 @@ compute a program that is implemented in a set of engineered sequences.
 %----------------------------------------------------------------------------------------
 
 \section{Introduction}
-
 An $m$ tag system is a computational model, that operates on a string of symbols.
 At each step it reads the first symbol, removes $m$ symbols from the HEAD of the
 string and then appends to its TAIL a sequence of symbols based on the symbol it read to the
@@ -116,7 +115,7 @@ that are removed $m$, the alphabet $\Sigma$ of symbols used and the production
 rules, $\Sigma \to \Sigma*$.
 
 \subsection{Example: multiplying two powers of two}
-An example implementation of a 2-tag system is multiplying two powers of two, whereby the initial input string consists of \textbf{x} symbols $X$, and \textbf{y} symbols $Y$, where \textbf{x} and \textbf{y} are powers of 2. The string should be converted to $\mathbf{x}\times \mathbf{y}$ symbols $Z$ Threfore to calculate $2^1\times2^2$, then $\mathbf{x}=2,\ \mathbf{y}=4$, the initial string will be $XXYYYY$ and final output will be $ZZZZZZZZ$.
+Multiplying two powers of two is an example implementation of a 2-tag system, whereby the initial input string consists of \textbf{x} symbols $X$, and \textbf{y} symbols $Y$, where \textbf{x} and \textbf{y} are powers of 2. The string should be converted to $\mathbf{x}\times \mathbf{y}$ symbols $Z$. Therefore, to calculate $2^1\times2^2$, then $\mathbf{x}=2,\ \mathbf{y}=4$, the initial string will be $XXYYYY$ and final output will be $ZZZZZZZZ$.
 
 \begin{lstlisting}[
   escapeinside={(*}{*)},
